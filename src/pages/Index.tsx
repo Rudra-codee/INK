@@ -11,14 +11,14 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-background px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20 items-center">
             {/* Left Column */}
-            <div className="animate-fade-up space-y-8">
-              <div className="space-y-4">
-                <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold tracking-tight text-foreground">
+            <div className="animate-fade-up space-y-8 max-w-xl">
+              <div className="space-y-6">
+                <h1 className="font-serif text-6xl sm:text-7xl lg:text-8xl font-semibold tracking-tight text-foreground">
                   Ink
                 </h1>
-                <p className="text-2xl sm:text-3xl font-medium text-foreground">
+                <p className="text-3xl sm:text-4xl font-medium text-foreground leading-tight">
                   Write. Collaborate. Flow.
                 </p>
               </div>
@@ -27,7 +27,7 @@ const Index = () => {
                 A real-time writing experience built for clarity, focus, and effortless teamwork.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button variant="hero" size="lg" className="group">
                   Start Writing
                   <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -42,8 +42,8 @@ const Index = () => {
             <div className="relative animate-float">
               <img 
                 src={heroIllustration} 
-                alt="Blue ink transforming into elegant text" 
-                className="w-full h-auto rounded-lg"
+                alt="Minimal blue ink stroke illustration" 
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -51,9 +51,9 @@ const Index = () => {
       </section>
 
       {/* Feature Strip */}
-      <section className="bg-background px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="bg-card px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
               icon={Zap}
               title="Live Sync"
@@ -74,22 +74,22 @@ const Index = () => {
       </section>
 
       {/* Showcase Section */}
-      <section className="bg-secondary px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="bg-background-secondary px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px] text-center">
-          <div className="space-y-4 mb-12">
-            <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">
+          <div className="space-y-4 mb-16">
+            <h2 className="text-4xl sm:text-5xl font-semibold text-foreground">
               A workspace that feels like writing on paper.
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Simple margins, natural spacing, ink-inspired details.
             </p>
           </div>
           
-          <div className="relative mx-auto max-w-4xl">
+          <div className="relative mx-auto max-w-5xl">
             <div className="overflow-hidden rounded-xl bg-card shadow-card">
               <img 
                 src={editorMockup} 
-                alt="Clean writing editor interface with paper-like background" 
+                alt="Clean writing editor interface with paper-like background and toolbar" 
                 className="w-full h-auto"
               />
             </div>
@@ -98,12 +98,12 @@ const Index = () => {
       </section>
 
       {/* Why Ink Section */}
-      <section className="bg-background px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="bg-card px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
             {/* Left Column */}
-            <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">
+            <div className="space-y-6 max-w-lg">
+              <h2 className="text-4xl sm:text-5xl font-semibold text-foreground">
                 Why Ink?
               </h2>
               <p className="text-lg leading-relaxed text-foreground/90">
@@ -112,7 +112,7 @@ const Index = () => {
             </div>
             
             {/* Right Column - Bullets */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               {[
                 "Real-time collaboration",
                 "Offline editing",
@@ -120,9 +120,9 @@ const Index = () => {
                 "Ink-driven aesthetics",
                 "Fast, reliable sync"
               ].map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                  <p className="text-base text-foreground">{item}</p>
+                <div key={index} className="flex items-start gap-4">
+                  <div className="mt-1.5 h-2.5 w-2.5 rounded-full bg-primary flex-shrink-0" />
+                  <p className="text-lg text-foreground">{item}</p>
                 </div>
               ))}
             </div>
@@ -131,12 +131,12 @@ const Index = () => {
       </section>
 
       {/* Collaboration Preview */}
-      <section className="bg-secondary px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="bg-background-secondary px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+          <div className="grid gap-16 lg:grid-cols-2 lg:gap-20 items-center">
             {/* Left Column */}
             <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl font-semibold text-foreground">
+              <h2 className="text-4xl sm:text-5xl font-semibold text-foreground">
                 Collaboration that feels natural.
               </h2>
               <p className="text-lg leading-relaxed text-muted-foreground">
@@ -144,37 +144,37 @@ const Index = () => {
               </p>
               
               {/* Avatar Row */}
-              <div className="flex items-center gap-3 pt-4">
-                <div className="flex -space-x-3">
+              <div className="flex items-center gap-4 pt-4">
+                <div className="flex -space-x-4">
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className="h-10 w-10 rounded-full border-2 border-background bg-primary/10 flex items-center justify-center text-primary font-medium transition-transform hover:scale-110 hover:z-10"
+                      className="h-12 w-12 rounded-full border-2 border-background-secondary bg-primary/10 flex items-center justify-center text-primary font-semibold transition-transform hover:scale-110 hover:z-10"
                     >
                       {String.fromCharCode(64 + i)}
                     </div>
                   ))}
                 </div>
-                <span className="text-sm text-muted-foreground">and your team</span>
+                <span className="text-base text-muted-foreground">and your team</span>
               </div>
             </div>
             
             {/* Right Column - Visual */}
-            <div className="bg-card rounded-lg p-8 shadow-card">
-              <div className="space-y-4">
+            <div className="bg-card rounded-xl p-8 shadow-card border border-border/50">
+              <div className="space-y-5">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
                   <span>3 people editing</span>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {[
                     { name: "Alex", color: "bg-blue-500" },
                     { name: "Jordan", color: "bg-green-500" },
                     { name: "Sam", color: "bg-purple-500" }
                   ].map((user, i) => (
                     <div key={i} className="flex items-center gap-3 animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
-                      <div className={`h-2 w-2 rounded-full ${user.color} animate-pulse`} />
-                      <span className="text-sm text-foreground">{user.name} is typing...</span>
+                      <div className={`h-2.5 w-2.5 rounded-full ${user.color} animate-pulse`} />
+                      <span className="text-base text-foreground">{user.name} is typing...</span>
                     </div>
                   ))}
                 </div>
@@ -185,13 +185,13 @@ const Index = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="bg-background px-6 py-16 sm:px-8 lg:px-12 lg:py-24">
+      <section className="bg-card px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
         <div className="mx-auto max-w-[1200px]">
-          <h2 className="mb-12 text-3xl sm:text-4xl font-semibold text-foreground text-center">
+          <h2 className="mb-16 text-4xl sm:text-5xl font-semibold text-foreground text-center">
             Who uses Ink?
           </h2>
           
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             <UseCaseBlock
               title="Writers"
               description="Craft stories and articles with a distraction-free, paper-like interface."
@@ -209,16 +209,16 @@ const Index = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-secondary px-6 py-20 sm:px-8 lg:px-12 lg:py-32">
+      <section className="bg-background-secondary px-6 py-20 sm:px-8 lg:px-12 lg:py-24">
         <div className="mx-auto max-w-[1200px] text-center">
           <div className="space-y-6">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-foreground">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-foreground">
               Start writing with Ink.
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-xl text-muted-foreground">
               Crafted for clarity and flow.
             </p>
-            <div className="pt-4">
+            <div className="pt-6">
               <Button variant="hero" size="lg" className="group">
                 Start Writing
                 <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -232,10 +232,10 @@ const Index = () => {
       <footer className="border-t border-border bg-background px-6 py-12 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-[1200px]">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="font-serif text-2xl font-semibold text-foreground">
+            <div className="font-serif text-3xl font-semibold text-foreground">
               Ink
             </div>
-            <nav className="flex gap-8 text-sm text-muted-foreground">
+            <nav className="flex gap-8 text-base text-muted-foreground">
               <a href="#" className="transition-colors hover:text-foreground">
                 GitHub
               </a>
