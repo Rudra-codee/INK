@@ -8,89 +8,107 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    /* Ink Design System - Paper & Ink Theme */
+    
+    /* Backgrounds */
+    --background: 40 29% 97%; /* Paper Off-White #FAF9F6 */
+    --foreground: 0 0% 4%; /* Black Ink #0A0A0A */
+    
+    --card: 0 0% 100%; /* Pure white for cards */
+    --card-foreground: 0 0% 4%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    --popover-foreground: 0 0% 4%;
+    
+    /* Primary - Blue Ink */
+    --primary: 214 100% 42%; /* Blue Ink #0057D8 */
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 214 100% 28%; /* Midnight Blue #003A8C */
+    
+    /* Secondary surfaces */
+    --secondary: 40 20% 94%; /* Paper Gray #F4F2ED */
+    --secondary-foreground: 0 0% 10%; /* Soft Black #1A1A1A */
+    
+    /* Muted */
+    --muted: 40 20% 94%;
+    --muted-foreground: 0 0% 51%; /* Warm Gray #838383 */
+    
+    /* Accent */
+    --accent: 214 100% 42%;
+    --accent-foreground: 0 0% 100%;
+    
+    /* Borders */
+    --border: 0 0% 81%; /* Ruled Line Gray #CECECE */
+    --input: 0 0% 81%;
+    --ring: 214 100% 42%;
+    
+    /* Destructive */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Radius */
+    --radius: 0.75rem; /* 12px for cards */
+    --radius-button: 0.5rem; /* 8px for buttons */
+    
+    /* Shadows */
+    --shadow-light: 0px 2px 8px rgba(0,0,0,0.06);
+    --shadow-card: 0px 4px 16px rgba(0,0,0,0.08);
+    --shadow-card-hover: 0px 8px 24px rgba(0,0,0,0.06);
+    
+    /* Transitions */
+    --transition-smooth: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --transition-fast: cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Sidebar */
     --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 214 100% 42%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 40 20% 94%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 81%;
+    --sidebar-ring: 214 100% 42%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
+    /* Dark mode maintains paper & ink metaphor with inverted values */
+    --background: 0 0% 4%;
+    --foreground: 40 29% 97%;
+    
+    --card: 0 0% 10%;
+    --card-foreground: 40 29% 97%;
+    
+    --popover: 0 0% 10%;
+    --popover-foreground: 40 29% 97%;
+    
+    --primary: 214 100% 42%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 214 100% 28%;
+    
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 40 29% 97%;
+    
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 51%;
+    
+    --accent: 214 100% 42%;
+    --accent-foreground: 0 0% 100%;
+    
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 214 100% 42%;
+    
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --sidebar-background: 0 0% 4%;
+    --sidebar-foreground: 40 29% 97%;
+    --sidebar-primary: 214 100% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 40 29% 97%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 214 100% 42%;
   }
 }
 
@@ -100,6 +118,47 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Typography */
+  .font-serif {
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  
+  /* Animations */
+  .animate-fade-up {
+    animation: fade-up 0.35s var(--transition-smooth);
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
   }
 }
