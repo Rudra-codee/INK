@@ -16,7 +16,7 @@ export const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
+            <a href="/" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Home
             </a>
             <a href="#features" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
@@ -25,18 +25,18 @@ export const Navbar = () => {
             <a href="#editor" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Editor
             </a>
-            <a href="#docs" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
+            <a href="/docs" className="text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Docs
             </a>
           </div>
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
-            <a href="#" className="text-base font-medium text-secondary-foreground hover:text-foreground transition-colors">
+            <a href="/login" className="text-base font-medium text-secondary-foreground hover:text-foreground transition-colors">
               Log In
             </a>
-            <Button variant="default" size="default">
-              Start Writing
+            <Button variant="default" size="default" asChild>
+              <a href="/signup">Start Writing</a>
             </Button>
           </div>
 
@@ -55,7 +55,7 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-background border-t border-border/40">
           <div className="px-6 py-6 space-y-4">
-            <a href="#" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
+            <a href="/" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Home
             </a>
             <a href="#features" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
@@ -64,15 +64,15 @@ export const Navbar = () => {
             <a href="#editor" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Editor
             </a>
-            <a href="#docs" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
+            <a href="/docs" className="block text-base font-medium text-foreground/90 hover:text-foreground transition-colors">
               Docs
             </a>
             <div className="pt-4 space-y-3">
-              <a href="#" className="block text-base font-medium text-secondary-foreground hover:text-foreground transition-colors">
+              <a href="/login" className="block text-base font-medium text-secondary-foreground hover:text-foreground transition-colors">
                 Log In
               </a>
-              <Button variant="default" size="default" className="w-full">
-                Start Writing
+              <Button variant="default" size="default" className="w-full" asChild>
+                <a href="/signup">Start Writing</a>
               </Button>
             </div>
           </div>
