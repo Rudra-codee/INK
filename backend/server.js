@@ -9,14 +9,25 @@ const requireAuth = require('./middleware/auth');
 const { connectDB, prisma, disconnectDB } = require('./config/db');
 
 const app = express();
-const frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: frontendOrigin,
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Not allowed by CORS'));
+    },
     credentials: true,
   })
 );
