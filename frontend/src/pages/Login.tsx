@@ -1,18 +1,35 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/hooks/useAuth";
+import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
-const SignUp = () => {
-  const [name, setName] = useState("");
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath =
+    (location.state as { from?: { pathname?: string } })?.from?.pathname || "/dashboard";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle sign up logic here
-    console.log("Sign up attempt", { name, email, password });
+    setSubmitting(true);
+    try {
+      await login({ email, password });
+      toast.success("Welcome back!");
+      navigate(redirectPath, { replace: true });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unable to login";
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -30,30 +47,15 @@ const SignUp = () => {
           {/* Heading */}
           <div className="space-y-2 text-center">
             <h2 className="text-2xl font-semibold text-foreground tracking-tight">
-              Create your account
+              Log in to Ink
             </h2>
             <p className="text-sm text-muted-foreground">
-              Start writing with clarity.
+              Continue your writing.
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-foreground">
-                Name
-              </Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="h-11 rounded-lg border-border focus-visible:ring-primary/20"
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="email" className="text-foreground">
                 Email
@@ -86,21 +88,31 @@ const SignUp = () => {
 
             <Button
               type="submit"
+              disabled={submitting}
               className="w-full h-11 text-base font-medium transition-all duration-150 hover:-translate-y-0.5"
             >
-              Create account
+              {submitting ? "Logging in..." : "Log in"}
             </Button>
           </form>
+
+          <div className="relative">
+            <div className="flex items-center gap-4 my-2">
+              <span className="h-px flex-1 bg-border" />
+              <span className="text-xs uppercase tracking-wide text-muted-foreground">or</span>
+              <span className="h-px flex-1 bg-border" />
+            </div>
+            <GoogleSignInButton />
+          </div>
 
           {/* Footer Link */}
           <div className="text-center pt-2">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              Don't have an account?{" "}
               <Link
-                to="/login"
+                to="/signup"
                 className="text-primary hover:text-primary-hover font-medium transition-colors duration-150"
               >
-                Log in →
+                Sign up →
               </Link>
             </p>
           </div>
@@ -110,4 +122,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Login;
