@@ -5,11 +5,12 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const authRoutes = require('./routes/auth');
+const docsRoutes = require('./routes/docs');
 const requireAuth = require('./middleware/auth');
 const { connectDB, prisma, disconnectDB } = require('./config/db');
 
 const app = express();
-const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:5173')
+const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -37,6 +38,7 @@ app.get('/api/ping', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/docs', docsRoutes);
 
 const mapUserResponse = (user) => ({
   id: user.id,

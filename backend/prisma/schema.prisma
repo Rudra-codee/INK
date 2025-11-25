@@ -8,13 +8,27 @@ datasource db {
 }
 
 model User {
-  id               String   @id @default(uuid())
+  id               String     @id @default(uuid())
   name             String?
-  email            String   @unique
+  email            String     @unique
   password         String?
-  googleId         String?  @unique
+  googleId         String?    @unique
   avatar           String?
   refreshTokenHash String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  documents        Document[]
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  ownerId   String
+  title     String
+  content   String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId])
 }
