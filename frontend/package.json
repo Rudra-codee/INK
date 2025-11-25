@@ -44,6 +44,8 @@
     "@tiptap/extension-blockquote": "^3.11.0",
     "@tiptap/extension-code": "^3.11.0",
     "@tiptap/extension-code-block": "^3.11.0",
+    "@tiptap/extension-collaboration": "^3.11.0",
+    "@tiptap/extension-collaboration-cursor": "^2.26.2",
     "@tiptap/extension-color": "^3.11.0",
     "@tiptap/extension-highlight": "^3.11.0",
     "@tiptap/extension-link": "^3.11.0",
@@ -73,6 +75,8 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27",
     "zod": "^3.25.76"
   },
   "devDependencies": {

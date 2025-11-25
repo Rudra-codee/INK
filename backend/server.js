@@ -10,7 +10,7 @@ const requireAuth = require('./middleware/auth');
 const { connectDB, prisma, disconnectDB } = require('./config/db');
 
 const app = express();
-const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082')
+const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082,http://10.7.0.219:8082,http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);

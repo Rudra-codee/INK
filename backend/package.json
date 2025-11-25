@@ -23,7 +23,10 @@
     "express-rate-limit": "^8.2.1",
     "google-auth-library": "^10.5.0",
     "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "ws": "^8.18.3",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.27"
   },
   "devDependencies": {
     "nodemon": "^3.1.11",

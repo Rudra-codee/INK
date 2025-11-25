@@ -1,16 +1,15 @@
 import { Editor } from '@tiptap/react';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import {
     Bold, Italic, Underline as UnderlineIcon, Strikethrough,
     AlignLeft, AlignCenter, AlignRight, AlignJustify,
     List, ListOrdered, Quote, Code, Terminal,
-    Heading1, Heading2, Heading3, Heading4,
     ArrowLeft, Save, Undo, Redo, Link as LinkIcon,
-    Type, LayoutList, MessageSquare, MoreHorizontal
+    Type, LayoutList, MessageSquare, ChevronDown, Minus, Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
 import { SaveIndicator } from './SaveIndicator';
 import { ColorPicker } from './ColorPicker';
 import {
@@ -19,7 +18,13 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Toggle } from "@/components/ui/toggle";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { cn } from '@/lib/utils';
 
 interface EditorToolbarProps {
@@ -44,6 +49,7 @@ export const EditorToolbar = ({
     onToggleOutline,
 }: EditorToolbarProps) => {
     const navigate = useNavigate();
+    const [fontSize, setFontSize] = useState('16');
 
     if (!editor) return null;
 
@@ -55,10 +61,10 @@ export const EditorToolbar = ({
             onClick={onClick}
             disabled={disabled}
             className={cn(
-                "h-8 w-8 p-0 rounded-md transition-all duration-200",
+                "h-9 w-9 p-0 rounded-lg transition-all duration-200",
                 isActive
-                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:text-primary-foreground"
-                    : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                    ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                    : "text-foreground hover:bg-muted"
             )}
             title={label}
         >
@@ -80,107 +86,133 @@ export const EditorToolbar = ({
         editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
     };
 
+    const getCurrentHeadingLevel = () => {
+        if (editor.isActive('heading', { level: 1 })) return 'h1';
+        if (editor.isActive('heading', { level: 2 })) return 'h2';
+        if (editor.isActive('heading', { level: 3 })) return 'h3';
+        if (editor.isActive('heading', { level: 4 })) return 'h4';
+        return 'normal';
+    };
+
+    const setHeadingLevel = (value: string) => {
+        if (value === 'normal') {
+            editor.chain().focus().setParagraph().run();
+        } else if (value === 'h1') {
+            editor.chain().focus().toggleHeading({ level: 1 }).run();
+        } else if (value === 'h2') {
+            editor.chain().focus().toggleHeading({ level: 2 }).run();
+        } else if (value === 'h3') {
+            editor.chain().focus().toggleHeading({ level: 3 }).run();
+        } else if (value === 'h4') {
+            editor.chain().focus().toggleHeading({ level: 4 }).run();
+        }
+    };
+
     return (
-        <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border/40 transition-all duration-200">
+        <div className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
             {/* Top Row: Navigation & Title */}
-            <div className="flex items-center justify-between px-4 h-14 border-b border-border/40">
-                <div className="flex items-center gap-4 flex-1">
+            <div className="flex items-center justify-between px-4 h-12 border-b border-border/50">
+                <div className="flex items-center gap-3 flex-1">
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => navigate('/dashboard')}
-                        className="gap-2 text-muted-foreground hover:text-foreground"
+                        className="gap-2 text-muted-foreground hover:text-foreground h-8"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        <span className="hidden sm:inline">Dashboard</span>
+                        <span className="hidden sm:inline text-sm">Back</span>
                     </Button>
 
-                    <div className="h-4 w-[1px] bg-border/60" />
+                    <div className="h-4 w-[1px] bg-border" />
 
                     <Input
                         value={title}
                         onChange={(e) => onTitleChange(e.target.value)}
-                        className="max-w-md border-none shadow-none text-base font-medium focus-visible:ring-0 px-2 h-9 bg-transparent"
+                        className="max-w-md border-none shadow-none text-sm font-medium focus-visible:ring-0 px-2 h-8 bg-transparent"
                         placeholder="Untitled Document"
                     />
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                     <SaveIndicator saving={saving} lastSaved={lastSaved} />
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={onManualSave}
-                        disabled={saving}
-                        className="gap-2 h-8"
-                    >
-                        <Save className="h-4 w-4" />
-                        Save
-                    </Button>
                     <Button
                         variant="ghost"
                         size="sm"
                         onClick={onToggleOutline}
                         className={cn(
                             "h-8 w-8 p-0",
-                            showOutline && "bg-primary/10 text-primary"
+                            showOutline && "bg-muted text-primary"
                         )}
                         title="Toggle Outline"
                     >
                         <LayoutList className="h-4 w-4" />
                     </Button>
+                    <Button
+                        variant="default"
+                        size="sm"
+                        onClick={onManualSave}
+                        disabled={saving}
+                        className="gap-2 h-8 px-3"
+                    >
+                        <Save className="h-3.5 w-3.5" />
+                        <span className="text-sm">Save</span>
+                    </Button>
                 </div>
             </div>
 
-            {/* Bottom Row: Formatting Tools */}
-            <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto no-scrollbar">
-                {/* History */}
-                <div className="flex items-center gap-0.5 pr-2 border-r border-border/40 mr-2">
-                    <ToolbarButton
-                        onClick={() => editor.chain().focus().undo().run()}
-                        disabled={!editor.can().undo()}
-                        icon={Undo}
-                        label="Undo"
+            {/* Bottom Row: Compact Formatting Toolbar */}
+            <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto scrollbar-hide">
+                {/* Heading Selector */}
+                <Select value={getCurrentHeadingLevel()} onValueChange={setHeadingLevel}>
+                    <SelectTrigger className="h-9 w-[110px] text-sm border-none shadow-none hover:bg-muted">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="h1">Heading 1</SelectItem>
+                        <SelectItem value="h2">Heading 2</SelectItem>
+                        <SelectItem value="h3">Heading 3</SelectItem>
+                        <SelectItem value="h4">Heading 4</SelectItem>
+                    </SelectContent>
+                </Select>
+
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
+                {/* Font Size Controls */}
+                <div className="flex items-center gap-0.5 bg-muted/50 rounded-lg px-1">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 hover:bg-background"
+                        onClick={() => {
+                            const newSize = Math.max(8, parseInt(fontSize) - 2);
+                            setFontSize(newSize.toString());
+                        }}
+                    >
+                        <Minus className="h-3 w-3" />
+                    </Button>
+                    <Input
+                        value={fontSize}
+                        onChange={(e) => setFontSize(e.target.value)}
+                        className="h-7 w-12 text-center text-sm border-none shadow-none bg-transparent focus-visible:ring-0 px-1"
                     />
-                    <ToolbarButton
-                        onClick={() => editor.chain().focus().redo().run()}
-                        disabled={!editor.can().redo()}
-                        icon={Redo}
-                        label="Redo"
-                    />
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 w-7 p-0 hover:bg-background"
+                        onClick={() => {
+                            const newSize = Math.min(72, parseInt(fontSize) + 2);
+                            setFontSize(newSize.toString());
+                        }}
+                    >
+                        <Plus className="h-3 w-3" />
+                    </Button>
                 </div>
 
-                {/* Text Style */}
-                <div className="flex items-center gap-0.5 pr-2 border-r border-border/40 mr-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 gap-1 px-2 font-normal text-muted-foreground hover:text-foreground">
-                                <Type className="h-4 w-4" />
-                                <span className="hidden sm:inline text-xs">Normal</span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                            <DropdownMenuItem onClick={() => editor.chain().focus().setParagraph().run()}>
-                                <Type className="h-4 w-4 mr-2" /> Normal Text
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
-                                <Heading1 className="h-4 w-4 mr-2" /> Heading 1
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
-                                <Heading2 className="h-4 w-4 mr-2" /> Heading 2
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
-                                <Heading3 className="h-4 w-4 mr-2" /> Heading 3
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}>
-                                <Heading4 className="h-4 w-4 mr-2" /> Heading 4
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
+                <div className="h-6 w-[1px] bg-border mx-1" />
 
-                {/* Basic Formatting */}
-                <div className="flex items-center gap-0.5 pr-2 border-r border-border/40 mr-2">
+                {/* Text Formatting */}
+                <div className="flex items-center gap-0.5">
                     <ToolbarButton
                         onClick={() => editor.chain().focus().toggleBold().run()}
                         isActive={editor.isActive('bold')}
@@ -205,6 +237,12 @@ export const EditorToolbar = ({
                         icon={Strikethrough}
                         label="Strikethrough"
                     />
+                </div>
+
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
+                {/* Colors */}
+                <div className="flex items-center gap-0.5">
                     <ColorPicker
                         currentColor={editor.getAttributes('textStyle').color}
                         onChange={(color) => editor.chain().focus().setColor(color).run()}
@@ -220,8 +258,10 @@ export const EditorToolbar = ({
                     />
                 </div>
 
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
                 {/* Alignment */}
-                <div className="flex items-center gap-0.5 pr-2 border-r border-border/40 mr-2">
+                <div className="flex items-center gap-0.5">
                     <ToolbarButton
                         onClick={() => editor.chain().focus().setTextAlign('left').run()}
                         isActive={editor.isActive({ textAlign: 'left' })}
@@ -248,8 +288,10 @@ export const EditorToolbar = ({
                     />
                 </div>
 
-                {/* Lists & Indent */}
-                <div className="flex items-center gap-0.5 pr-2 border-r border-border/40 mr-2">
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
+                {/* Lists */}
+                <div className="flex items-center gap-0.5">
                     <ToolbarButton
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         isActive={editor.isActive('bulletList')}
@@ -264,7 +306,9 @@ export const EditorToolbar = ({
                     />
                 </div>
 
-                {/* Special Blocks */}
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
+                {/* Insert Elements */}
                 <div className="flex items-center gap-0.5">
                     <ToolbarButton
                         onClick={setLink}
@@ -282,7 +326,7 @@ export const EditorToolbar = ({
                         onClick={() => editor.chain().focus().toggleCode().run()}
                         isActive={editor.isActive('code')}
                         icon={Code}
-                        label="Inline Code"
+                        label="Code"
                     />
                     <ToolbarButton
                         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
@@ -296,12 +340,12 @@ export const EditorToolbar = ({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0 rounded-md text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                className="h-9 w-9 p-0 rounded-lg hover:bg-muted"
                             >
                                 <MessageSquare className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
+                        <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => editor.chain().focus().setCallout('info').run()}>
                                 Info Callout
                             </DropdownMenuItem>
