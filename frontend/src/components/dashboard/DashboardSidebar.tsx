@@ -25,7 +25,7 @@ export const DashboardSidebar = ({ isOpen = true, onClose }: DashboardSidebarPro
 
     const navItems: SidebarNavItem[] = [
         { label: 'Home', icon: <Home className="h-4 w-4" />, path: '/dashboard' },
-        { label: 'All Documents', icon: <FileText className="h-4 w-4" />, path: '/dashboard/documents' },
+        { label: 'All Documents', icon: <FileText className="h-4 w-4" />, path: '/dashboard/all-documents' },
         { label: 'Shared With Me', icon: <Users className="h-4 w-4" />, path: '/dashboard/shared' },
         { label: 'Favorites', icon: <Star className="h-4 w-4" />, path: '/dashboard/favorites' },
         { label: 'Trash', icon: <Trash2 className="h-4 w-4" />, path: '/dashboard/trash' },

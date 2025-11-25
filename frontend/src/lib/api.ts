@@ -94,6 +94,41 @@ export const docsApi = {
       method: 'DELETE',
       token,
     }),
+
+  favorite: (id: string, favorite: boolean, token: string) =>
+    request<Document>(`/api/docs/${id}/favorite`, {
+      method: 'PUT',
+      body: JSON.stringify({ favorite }),
+      token,
+    }),
+
+  trash: (id: string, token: string) =>
+    request<Document>(`/api/docs/${id}/trash`, {
+      method: 'PUT',
+      token,
+    }),
+
+  restore: (id: string, token: string) =>
+    request<Document>(`/api/docs/${id}/restore`, {
+      method: 'PUT',
+      token,
+    }),
+
+  deletePermanent: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/docs/${id}/permanent`, {
+      method: 'DELETE',
+      token,
+    }),
+
+  getFavorites: (token: string) =>
+    request<Document[]>('/api/docs/favorites', {
+      token,
+    }),
+
+  getTrash: (token: string) =>
+    request<Document[]>('/api/docs/trash', {
+      token,
+    }),
 };
 
 

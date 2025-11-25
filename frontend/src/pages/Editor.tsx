@@ -3,22 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useDocument } from '@/hooks/useDocument';
 import { useAutosave } from '@/hooks/useAutosave';
-import { useEditor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import Link from '@tiptap/extension-link';
-import TextAlign from '@tiptap/extension-text-align';
-import Placeholder from '@tiptap/extension-placeholder';
-import { EditorContent } from '@tiptap/react';
 import { EditorToolbar } from '@/components/editor/EditorToolbar';
+import { TipTapEditor } from '@/components/editor/TipTapEditor';
+import { DocumentOutline } from '@/components/editor/DocumentOutline';
+import { cn } from '@/lib/utils';
+import { Editor } from '@tiptap/react';
 
-const Editor = () => {
+const EditorPage = () => {
     const { docId } = useParams<{ docId: string }>();
     const navigate = useNavigate();
     const { user, status } = useAuth();
-    const { document, loading, error, saveDocument } = useDocument(docId || '');
+    const { document, loading, error, saveDocument } = useDocument(docId!);
+
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [editor, setEditor] = useState<Editor | null>(null);
+    const [showOutline, setShowOutline] = useState(false);
 
     // Authentication gate
     useEffect(() => {
@@ -37,35 +37,9 @@ const Editor = () => {
         }
     }, [document]);
 
-    // TipTap editor setup
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            Link.configure({
-                openOnClick: false,
-            }),
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
-            Placeholder.configure({
-                placeholder: 'Start writing...',
-            }),
-        ],
-        content,
-        onUpdate: ({ editor }) => {
-            setContent(editor.getHTML());
-        },
-        editorProps: {
-            attributes: {
-                class: 'prose prose-lg max-w-none focus:outline-none min-h-[600px]',
-            },
-        },
-    });
-
-    // Update editor content when document loads
+    // Update editor content when document loads (if editor is ready)
     useEffect(() => {
-        if (editor && document) {
+        if (editor && document && !editor.getText()) {
             editor.commands.setContent(document.content);
         }
     }, [editor, document]);
@@ -111,7 +85,7 @@ const Editor = () => {
     if (!user || !document) return null;
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background flex flex-col">
             {/* Toolbar */}
             <EditorToolbar
                 editor={editor}
@@ -120,16 +94,40 @@ const Editor = () => {
                 saving={saving}
                 lastSaved={lastSaved}
                 onManualSave={manualSave}
+                showOutline={showOutline}
+                onToggleOutline={() => setShowOutline(!showOutline)}
             />
 
-            {/* Editor Canvas */}
-            <div className="flex justify-center px-4 py-8">
-                <div className="w-full max-w-[760px] bg-card rounded-xl shadow-card p-12">
-                    <EditorContent editor={editor} />
+            {/* Main Content Area */}
+            <div className="flex-1 flex relative overflow-hidden">
+                {/* Outline Sidebar (Desktop) */}
+                <div className={cn(
+                    "hidden xl:block transition-all duration-300 ease-in-out border-r border-border/40 bg-background/50 backdrop-blur-sm",
+                    showOutline ? "w-64 opacity-100 translate-x-0" : "w-0 opacity-0 -translate-x-full"
+                )}>
+                    <DocumentOutline
+                        editor={editor}
+                        isOpen={showOutline}
+                        onToggle={() => setShowOutline(!showOutline)}
+                    />
+                </div>
+
+                {/* Editor Canvas */}
+                <div className="flex-1 flex justify-center px-4 py-8 overflow-y-auto scroll-smooth">
+                    <div className={cn(
+                        "w-full max-w-[800px] bg-white rounded-xl shadow-sm border border-black/5 min-h-[calc(100vh-140px)] p-12 md:p-16 transition-all duration-300",
+                        "prose-headings:font-serif prose-headings:font-medium prose-p:font-sans prose-p:text-lg prose-p:leading-relaxed"
+                    )}>
+                        <TipTapEditor
+                            content={content}
+                            onChange={setContent}
+                            onEditorReady={setEditor}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-export default Editor;
+export default EditorPage;

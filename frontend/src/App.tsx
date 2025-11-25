@@ -10,6 +10,11 @@ import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
 import Editor from "./pages/Editor";
+import HomePage from "./pages/dashboard/HomePage";
+import AllDocumentsPage from "./pages/dashboard/AllDocumentsPage";
+import SharedPage from "./pages/dashboard/SharedPage";
+import FavoritesPage from "./pages/dashboard/FavoritesPage";
+import TrashPage from "./pages/dashboard/TrashPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
@@ -40,6 +45,46 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Editor />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/all-documents"
+              element={
+                <ProtectedRoute>
+                  <AllDocumentsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/shared"
+              element={
+                <ProtectedRoute>
+                  <SharedPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/favorites"
+              element={
+                <ProtectedRoute>
+                  <FavoritesPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/trash"
+              element={
+                <ProtectedRoute>
+                  <TrashPage />
                 </ProtectedRoute>
               }
             />

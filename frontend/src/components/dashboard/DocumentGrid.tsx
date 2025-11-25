@@ -20,7 +20,7 @@ const templates = [
     { type: 'essay' as const, title: 'Essay', description: 'Structured writing' },
     { type: 'notes' as const, title: 'Notes', description: 'Quick thoughts' },
     { type: 'journal' as const, title: 'Journal', description: 'Daily reflections' },
-    { type: 'meeting' as const, title: 'Meeting Notes', description: 'Capture discussions' },
+    { type: 'meeting-notes' as const, title: 'Meeting Notes', description: 'Capture discussions' },
 ];
 
 export const DocumentGrid = ({ documents = [], loading = false }: DocumentGridProps) => {
