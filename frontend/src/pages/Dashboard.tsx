@@ -1,68 +1,81 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { format } from 'date-fns';
+import { useDocuments } from '@/hooks/useDocuments';
+import { DashboardTopNav } from '@/components/dashboard/DashboardTopNav';
+import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { DocumentGrid } from '@/components/dashboard/DocumentGrid';
+import { NewDocumentButton } from '@/components/dashboard/NewDocumentButton';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, status } = useAuth();
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { documents, loading } = useDocuments();
 
-  if (!user) return null;
+  // Authentication gate
+  useEffect(() => {
+    if (status === 'checking') return;
+
+    if (status === 'unauthenticated' || !user) {
+      navigate('/login', { replace: true });
+      return;
+    }
+  }, [user, status, navigate]);
+
+  // Show nothing while checking auth or redirecting
+  if (status === 'checking' || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse">
+          <div className="h-8 w-32 bg-muted rounded mb-4" />
+          <div className="h-4 w-48 bg-muted rounded" />
+        </div>
+      </div>
+    );
+  }
+
+  // Convert documents to format expected by DocumentGrid
+  const formattedDocuments = documents.map(doc => ({
+    id: doc.id,
+    title: doc.title,
+    updatedAt: new Date(doc.updatedAt),
+    preview: doc.content.replace(/<[^>]*>/g, '').substring(0, 100), // Strip HTML and get preview
+  }));
 
   return (
-    <div className="min-h-screen bg-background px-4 py-10">
-      <div className="max-w-4xl mx-auto space-y-8 animate-fade-up">
-        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm text-muted-foreground">Welcome back</p>
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-              {user.name || user.email}
+    <div className="min-h-screen bg-background">
+      {/* Top Navigation */}
+      <DashboardTopNav onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+
+      {/* Sidebar */}
+      <DashboardSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      {/* Main Content */}
+      <main className="md:pl-64 pt-16">
+        <div className="max-w-7xl mx-auto p-6 md:p-8 lg:p-10">
+          {/* Welcome Header */}
+          <div className="mb-8 animate-fade-up">
+            <h1 className="text-3xl font-semibold text-foreground mb-2">
+              Welcome back, {user.name || user.email.split('@')[0]}
             </h1>
+            <p className="text-muted-foreground">
+              Continue where you left off or start something new.
+            </p>
           </div>
-          <Button variant="outline" onClick={logout}>
-            Sign out
-          </Button>
-        </header>
 
-        <section className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>Your account is secured with JWT & NeonDB.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Email</p>
-                <p className="text-base font-medium">{user.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">User ID</p>
-                <p className="text-sm font-mono text-foreground/80 break-all">{user.id}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Last updated</p>
-                <p className="text-base font-medium">
-                  {format(new Date(user.updatedAt), 'PPP p')}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Document Grid */}
+          <DocumentGrid documents={formattedDocuments} loading={loading} />
+        </div>
+      </main>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Getting Started</CardTitle>
-              <CardDescription>Sample actions unlocked for authenticated users.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <p>✅ JWT access token validated via `/api/me`.</p>
-              <p>✅ Refresh token stored securely in NeonDB.</p>
-              <p>✅ You now have access to this dashboard.</p>
-            </CardContent>
-          </Card>
-        </section>
-      </div>
+      {/* Floating New Document Button */}
+      <NewDocumentButton />
     </div>
   );
 };
 
 export default Dashboard;
-

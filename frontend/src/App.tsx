@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import Editor from "./pages/Editor";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 
@@ -31,6 +32,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/editor/:docId"
+              element={
+                <ProtectedRoute>
+                  <Editor />
                 </ProtectedRoute>
               }
             />

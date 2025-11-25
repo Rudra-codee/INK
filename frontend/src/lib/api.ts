@@ -1,4 +1,5 @@
 import type { AuthResponse, User } from '@/types/auth';
+import type { Document, DocumentCreatePayload, DocumentUpdatePayload } from '@/types/document';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -62,4 +63,37 @@ export const authApi = {
       token,
     }),
 };
+
+export const docsApi = {
+  create: (payload: DocumentCreatePayload, token: string) =>
+    request<Document>('/api/docs/create', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      token,
+    }),
+
+  list: (token: string) =>
+    request<Document[]>('/api/docs', {
+      token,
+    }),
+
+  get: (id: string, token: string) =>
+    request<Document>(`/api/docs/${id}`, {
+      token,
+    }),
+
+  update: (id: string, payload: DocumentUpdatePayload, token: string) =>
+    request<Document>(`/api/docs/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+      token,
+    }),
+
+  delete: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/docs/${id}`, {
+      method: 'DELETE',
+      token,
+    }),
+};
+
 
