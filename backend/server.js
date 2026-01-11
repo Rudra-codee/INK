@@ -6,11 +6,16 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const authRoutes = require('./routes/auth');
 const docsRoutes = require('./routes/docs');
+const storyRoomRoutes = require('./routes/storyRooms');
+const publicStoryRoutes = require('./routes/publicStory');
 const requireAuth = require('./middleware/auth');
 const { connectDB, prisma, disconnectDB } = require('./config/db');
+const { initTurnTimer } = require('./cron/turnTimer');
 
 const app = express();
-const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082,http://10.7.0.219:8082,http://localhost:5173')
+initTurnTimer();
+
+const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082,http://10.7.0.219:8082,http://localhost:5173,http://localhost:8080')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
@@ -21,10 +26,10 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) {
-        return callback(null, true);
-      }
-      if (allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
         return callback(null, true);
       }
       return callback(new Error('Not allowed by CORS'));
@@ -39,6 +44,8 @@ app.get('/api/ping', (_req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/docs', docsRoutes);
+app.use('/api/story-rooms', storyRoomRoutes);
+app.use('/api/public', publicStoryRoutes);
 
 const mapUserResponse = (user) => ({
   id: user.id,

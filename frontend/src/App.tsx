@@ -17,6 +17,11 @@ import FavoritesPage from "./pages/dashboard/FavoritesPage";
 import TrashPage from "./pages/dashboard/TrashPage";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import CreateRoomPage from "./pages/rooms/CreateRoomPage";
+import RoomLobbyPage from "./pages/rooms/RoomLobbyPage";
+import RoomPlayPage from "./pages/rooms/RoomPlayPage";
+import RoomResultPage from "./pages/rooms/RoomResultPage";
+import PublicStoryPage from "./pages/public/PublicStoryPage";
 
 const queryClient = new QueryClient();
 
@@ -88,6 +93,50 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/rooms"
+              element={
+                <ProtectedRoute>
+                  <CreateRoomPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rooms/new"
+              element={
+                <ProtectedRoute>
+                  <CreateRoomPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rooms/:roomId/lobby"
+              element={
+                <ProtectedRoute>
+                  <RoomLobbyPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rooms/:roomId/play"
+              element={
+                <ProtectedRoute>
+                  <RoomPlayPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/rooms/:roomId/result"
+              element={
+                <ProtectedRoute>
+                  <RoomResultPage />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* PUBLIC ROUTES */}
+            <Route path="/story/:slug" element={<PublicStoryPage />} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

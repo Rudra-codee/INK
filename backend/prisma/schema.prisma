@@ -18,6 +18,8 @@ model User {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   documents        Document[]
+  storyMemberships StoryRoomMember[]
+  storyTurns       StoryTurn[]
 }
 
 model Document {
@@ -35,4 +37,56 @@ model Document {
   @@index([ownerId])
   @@index([ownerId, favorite])
   @@index([ownerId, trashed])
+}
+
+model StoryRoom {
+  id               String               @id @default(uuid())
+  title            String
+  basePlot         String?
+  turnTimeLimit    Int                  @default(60) // in seconds
+  wordLimit        Int                  @default(100)
+  totalTurns       Int                  @default(20)
+  status           String               @default("waiting") // waiting, active, completed
+  currentTurnIndex Int                  @default(0) // Tracks whose turn it is
+  turnStartedAt    DateTime?
+  turnEndsAt       DateTime?
+  isPublic         Boolean              @default(false)
+  publicSlug       String?              @unique
+  finishedAt       DateTime?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  members          StoryRoomMember[]
+  characters       StoryRoomCharacter[]
+  turns            StoryTurn[]
+}
+
+model StoryRoomMember {
+  id       String    @id @default(uuid())
+  roomId   String
+  userId   String
+  role     String // LEADER, WRITER, SPECTATOR
+  joinedAt DateTime  @default(now())
+  room     StoryRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([roomId, userId])
+}
+
+model StoryRoomCharacter {
+  id          String    @id @default(uuid())
+  roomId      String
+  name        String
+  description String?
+  room        StoryRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model StoryTurn {
+  id        String    @id @default(uuid())
+  roomId    String
+  userId    String
+  content   String
+  turnOrder Int // 1, 2, 3...
+  createdAt DateTime  @default(now())
+  room      StoryRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

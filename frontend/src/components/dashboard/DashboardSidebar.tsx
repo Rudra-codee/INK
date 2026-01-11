@@ -1,4 +1,4 @@
-import { Home, FileText, Users, Star, Trash2, Plus } from 'lucide-react';
+import { Home, FileText, Users, Star, Trash2, Plus, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -10,6 +10,9 @@ interface SidebarNavItem {
     label: string;
     icon: React.ReactNode;
     path: string;
+    badge?: string;
+    className?: string;
+    activeClassName?: string;
 }
 
 interface DashboardSidebarProps {
@@ -27,6 +30,14 @@ export const DashboardSidebar = ({ isOpen = true, onClose }: DashboardSidebarPro
         { label: 'Home', icon: <Home className="h-4 w-4" />, path: '/dashboard' },
         { label: 'All Documents', icon: <FileText className="h-4 w-4" />, path: '/dashboard/all-documents' },
         { label: 'Shared With Me', icon: <Users className="h-4 w-4" />, path: '/dashboard/shared' },
+        {
+            label: 'Story Rooms',
+            icon: <Sparkles className="h-4 w-4" />,
+            path: '/rooms',
+            badge: 'NEW',
+            className: 'text-blue-600 bg-blue-50/50 hover:bg-blue-100/50 hover:text-blue-700 dark:text-blue-400 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 dark:hover:text-blue-300',
+            activeClassName: 'bg-blue-100 text-blue-700 shadow-sm dark:bg-blue-900/40 dark:text-blue-300'
+        },
         { label: 'Favorites', icon: <Star className="h-4 w-4" />, path: '/dashboard/favorites' },
         { label: 'Trash', icon: <Trash2 className="h-4 w-4" />, path: '/dashboard/trash' },
     ];
@@ -82,20 +93,30 @@ export const DashboardSidebar = ({ isOpen = true, onClose }: DashboardSidebarPro
                     {/* Navigation Items */}
                     <nav className="space-y-1 flex-1">
                         {navItems.map((item) => {
-                            const isActive = location.pathname === item.path;
+                            const isActive = item.path === '/rooms'
+                                ? location.pathname.startsWith('/rooms')
+                                : location.pathname === item.path;
                             return (
                                 <button
                                     key={item.path}
                                     onClick={() => handleNavClick(item.path)}
                                     className={cn(
-                                        'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                                        'w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150',
+                                        item.className,
                                         isActive
-                                            ? 'bg-primary text-primary-foreground shadow-sm'
-                                            : 'text-foreground hover:bg-card hover:text-primary'
+                                            ? (item.activeClassName || 'bg-primary text-primary-foreground shadow-sm')
+                                            : (item.className || 'text-foreground hover:bg-card hover:text-primary')
                                     )}
                                 >
-                                    {item.icon}
-                                    <span>{item.label}</span>
+                                    <div className="flex items-center gap-3">
+                                        {item.icon}
+                                        <span>{item.label}</span>
+                                    </div>
+                                    {item.badge && (
+                                        <span className="px-1.5 py-0.5 text-[10px] uppercase font-bold tracking-wider text-blue-600 bg-blue-100 rounded-full dark:text-blue-300 dark:bg-blue-900/50">
+                                            {item.badge}
+                                        </span>
+                                    )}
                                 </button>
                             );
                         })}
