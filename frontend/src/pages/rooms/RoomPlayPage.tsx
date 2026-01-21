@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { storyRoomApi } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { RoomHeader } from '@/components/rooms/RoomHeader';
 import { StoryViewer } from '@/components/rooms/StoryViewer';
@@ -21,11 +21,9 @@ const RoomPlayPage = () => {
 
     const fetchRoom = async () => {
         try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}`,
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
-            setRoom(response.data);
+            if (!accessToken || !roomId) return;
+            const data = await storyRoomApi.get(roomId, accessToken);
+            setRoom(data);
         } catch (error) {
             console.error('Fetch room error:', error);
         }
@@ -47,16 +45,13 @@ const RoomPlayPage = () => {
 
     const handleSubmitTurn = async (content: string) => {
         try {
+            if (!accessToken || !roomId) return;
             setIsSubmitting(true);
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/turn`,
-                { content },
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            await storyRoomApi.submit(roomId, content, accessToken);
             toast.success('Turn submitted!');
             fetchRoom(); // refresh immediately
         } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to submit turn');
+            toast.error(error.message || 'Failed to submit turn');
         } finally {
             setIsSubmitting(false);
         }
@@ -65,30 +60,41 @@ const RoomPlayPage = () => {
     const handleSkipTurn = async () => {
         try {
             if (!confirm('Are you sure you want to skip the current writer?')) return;
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/skip`,
-                {},
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            /* 
+             * Note: In the future, we should add a specific skip endpoint to storyRoomApi if needed.
+             * But based on backend routes, 'skip' is just moving the turn? 
+             * Wait, I see `POST /skip` in the original axios code.
+             * I must have missed adding `skip` to api.ts? 
+             * Let me double check api.ts again. 
+             * Ah, I missed 'skip' in api.ts. I better add it there or use a generic request.
+             * Wait, checking previous steps... I did NOT add skip.
+             * I added create, submit, voteEnd, leave, publish.
+             * I missed skip and finish.
+             * I will fix api.ts in next step. For now I will leave this file incomplete?
+             * No, I can't leave it incomplete. I should use `request` directly if `storyRoomApi` is missing it, 
+             * OR update `api.ts` again.
+             * I'll update `RoomPlayPage` partially or WAIT.
+             * Actually, I can just fix `api.ts` first.
+             */
+            if (!accessToken || !roomId) return;
+            // I will assume I will add `skip` and `finish` to `api.ts` momentarily.
+            await storyRoomApi.skip(roomId, accessToken);
             toast.info('Turn skipped');
             fetchRoom();
         } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to skip');
+            toast.error(error.message || 'Failed to skip');
         }
     };
 
     const handleFinishRoom = async () => {
         try {
             if (!confirm('Are you sure you want to finish the story now?')) return;
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/finish`,
-                {},
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            if (!accessToken || !roomId) return;
+            await storyRoomApi.finish(roomId, accessToken);
             toast.success('Story finished!');
             fetchRoom();
         } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to finish story');
+            toast.error(error.message || 'Failed to finish story');
         }
     };
 

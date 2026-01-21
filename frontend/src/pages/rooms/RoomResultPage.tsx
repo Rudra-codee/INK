@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { storyRoomApi } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { RoomHeader } from '@/components/rooms/RoomHeader';
 import { StoryViewer } from '@/components/rooms/StoryViewer';
@@ -20,11 +20,9 @@ const RoomResultPage = () => {
     useEffect(() => {
         const fetchRoom = async () => {
             try {
-                const response = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}`,
-                    { headers: { Authorization: `Bearer ${accessToken}` } }
-                );
-                setRoom(response.data);
+                if (!accessToken || !roomId) return;
+                const data = await storyRoomApi.get(roomId, accessToken);
+                setRoom(data);
             } catch (error) {
                 console.error('Fetch room error:', error);
             }
@@ -34,11 +32,8 @@ const RoomResultPage = () => {
 
     const handlePublish = async () => {
         try {
-            const res = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/publish`,
-                {},
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            if (!accessToken || !roomId) return;
+            await storyRoomApi.publish(roomId, accessToken);
             setRoom((prev: any) => ({ ...prev, isPublic: true }));
             toast.success('Story published successfully!');
         } catch (error) {

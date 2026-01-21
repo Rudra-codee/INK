@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { RoomHeader } from '@/components/rooms/RoomHeader';
 import { Plus, Trash, Sparkles } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
-import axios from 'axios';
+import { storyRoomApi } from '@/lib/api';
 import { toast } from 'sonner';
 
 interface Character {
@@ -62,14 +62,10 @@ const CreateRoomPage = () => {
                 turnTimeSec: formData.turnTimeLimit, // mapping for backend
             };
 
-            const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms`,
-                payload,
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            const response = await storyRoomApi.create(payload, accessToken);
 
             toast.success('Room created successfully!');
-            navigate(`/rooms/${response.data.id}/lobby`);
+            navigate(`/rooms/${response.id}/lobby`);
         } catch (error: any) {
             console.error("Create room error", error)
             toast.error(error.response?.data?.error || 'Failed to create room');

@@ -146,6 +146,45 @@ export const storyRoomApi = {
       method: 'POST',
       token,
     }),
+  create: (payload: any, token: string) =>
+    request<{ id: string }>('/api/story-rooms', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      token,
+    }),
+  submit: (id: string, content: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/submit`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+      token,
+    }),
+  voteEnd: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/vote/end`, {
+      method: 'POST',
+      token,
+    }),
+  leave: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/leave`, {
+      method: 'POST',
+      token,
+    }),
+  publish: (id: string, token: string) =>
+    request<{ slug: string }>(`/api/story-rooms/${id}/publish`, {
+      method: 'POST',
+      token,
+    }),
+  getPublicStory: (slug: string) =>
+    request<any>(`/api/public/story/${slug}`),
+  skip: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/skip`, {
+      method: 'POST',
+      token,
+    }),
+  finish: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/finish`, {
+      method: 'POST',
+      token,
+    }),
 };
 
 

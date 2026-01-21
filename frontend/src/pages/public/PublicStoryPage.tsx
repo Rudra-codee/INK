@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useParams } from 'react-router-dom';
+import { storyRoomApi } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sparkles, ArrowRight } from 'lucide-react';
@@ -15,8 +15,9 @@ const PublicStoryPage = () => {
     useEffect(() => {
         const fetchStory = async () => {
             try {
-                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/public/story/${slug}`);
-                setStory(response.data);
+                if (!slug) return;
+                const data = await storyRoomApi.getPublicStory(slug);
+                setStory(data);
             } catch (err: any) {
                 setError(err.response?.data?.error || 'Failed to load story');
             }
