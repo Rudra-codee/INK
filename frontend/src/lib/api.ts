@@ -1,7 +1,7 @@
 import type { AuthResponse, User } from '@/types/auth';
 import type { Document, DocumentCreatePayload, DocumentUpdatePayload } from '@/types/document';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 type RequestOptions = RequestInit & {
   token?: string | null;
