@@ -131,4 +131,21 @@ export const docsApi = {
     }),
 };
 
+export const storyRoomApi = {
+  get: (id: string, token: string) =>
+    request<any>(`/api/story-rooms/${id}`, {
+      token,
+    }),
+  join: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/join`, {
+      method: 'POST',
+      token,
+    }),
+  start: (id: string, token: string) =>
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/start`, {
+      method: 'POST',
+      token,
+    }),
+};
+
 

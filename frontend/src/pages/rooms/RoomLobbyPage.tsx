@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { storyRoomApi } from '@/lib/api';
 import { useAuth } from '@/hooks/useAuth';
 import { RoomHeader } from '@/components/rooms/RoomHeader';
 import { InviteRoomModal } from '@/components/rooms/InviteRoomModal';
@@ -23,14 +23,12 @@ const RoomLobbyPage = () => {
 
     const fetchRoom = async () => {
         try {
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}`,
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
-            setRoom(response.data);
+            if (!accessToken || !roomId) return;
+            const data = await storyRoomApi.get(roomId, accessToken);
+            setRoom(data);
 
             // Auto-redirect if active
-            if (response.data.status === 'active') {
+            if (data.status === 'active') {
                 navigate(`/rooms/${roomId}/play`);
             }
         } catch (error) {
@@ -52,16 +50,13 @@ const RoomLobbyPage = () => {
 
     const handleJoin = async () => {
         try {
+            if (!accessToken || !roomId) return;
             setJoining(true);
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/join`,
-                {},
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            await storyRoomApi.join(roomId, accessToken);
             toast.success('Joined room!');
             fetchRoom();
         } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to join');
+            toast.error(error.message || 'Failed to join');
         } finally {
             setJoining(false);
         }
@@ -69,15 +64,12 @@ const RoomLobbyPage = () => {
 
     const handleStart = async () => {
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/story-rooms/${roomId}/start`,
-                {},
-                { headers: { Authorization: `Bearer ${accessToken}` } }
-            );
+            if (!accessToken || !roomId) return;
+            await storyRoomApi.start(roomId, accessToken);
             toast.success('Starting game...');
             // Navigation handled by auto-redirect in effect
         } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to start game');
+            toast.error(error.message || 'Failed to start game');
         }
     };
 
