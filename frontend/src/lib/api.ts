@@ -153,7 +153,7 @@ export const storyRoomApi = {
       token,
     }),
   submit: (id: string, content: string, token: string) =>
-    request<{ ok: boolean }>(`/api/story-rooms/${id}/submit`, {
+    request<{ ok: boolean }>(`/api/story-rooms/${id}/turn`, {
       method: 'POST',
       body: JSON.stringify({ content }),
       token,
