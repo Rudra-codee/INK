@@ -40,7 +40,11 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes('*')) {
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        allowedOrigins.includes('*') ||
+        /^https:\/\/ink-.*\.vercel\.app$/.test(origin)
+      ) {
         return callback(null, true);
       }
       return callback(new Error('Not allowed by CORS'));
