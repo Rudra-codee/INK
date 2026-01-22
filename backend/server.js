@@ -15,10 +15,21 @@ const { initTurnTimer } = require('./cron/turnTimer');
 const app = express();
 initTurnTimer();
 
-const allowedOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:8082,http://10.7.0.219:8082,http://localhost:5173,http://localhost:8080')
+const defaultOrigins = [
+  'http://localhost:8082',
+  'http://10.7.0.219:8082',
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'https://ink-lilac.vercel.app'
+];
+
+const envOrigins = (process.env.FRONTEND_URLS || process.env.FRONTEND_URL || '')
   .split(',')
-  .map((origin) => origin.trim())
   .filter(Boolean);
+
+const allowedOrigins = [...defaultOrigins, ...envOrigins]
+  .map((origin) => origin.trim())
+  .filter((origin, index, self) => self.indexOf(origin) === index);
 
 app.use(helmet());
 app.use(express.json());
