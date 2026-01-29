@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -11,11 +11,17 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, status } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath =
     (location.state as { from?: { pathname?: string } })?.from?.pathname || "/dashboard";
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      navigate(redirectPath, { replace: true });
+    }
+  }, [status, navigate, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
