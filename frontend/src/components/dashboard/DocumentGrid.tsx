@@ -8,11 +8,13 @@ interface Document {
     title: string;
     updatedAt: Date;
     preview?: string;
+    isFavorite?: boolean;
 }
 
 interface DocumentGridProps {
     documents?: Document[];
     loading?: boolean;
+    onDocumentActionComplete?: () => void;
 }
 
 const templates = [
@@ -23,7 +25,7 @@ const templates = [
     { type: 'meeting-notes' as const, title: 'Meeting Notes', description: 'Capture discussions' },
 ];
 
-export const DocumentGrid = ({ documents = [], loading = false }: DocumentGridProps) => {
+export const DocumentGrid = ({ documents = [], loading = false, onDocumentActionComplete }: DocumentGridProps) => {
     const hasDocuments = documents.length > 0;
 
     return (
@@ -66,6 +68,8 @@ export const DocumentGrid = ({ documents = [], loading = false }: DocumentGridPr
                                 title={doc.title}
                                 updatedAt={doc.updatedAt}
                                 preview={doc.preview}
+                                isFavorite={doc.isFavorite}
+                                onActionComplete={onDocumentActionComplete}
                             />
                         ))}
                     </div>

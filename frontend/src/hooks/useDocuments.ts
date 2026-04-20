@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
 import { docsApi } from '@/lib/api';
 import type { Document } from '@/types/document';
@@ -9,27 +9,27 @@ export const useDocuments = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchDocuments = async () => {
-            if (!accessToken) {
-                setLoading(false);
-                return;
-            }
+    const fetchDocuments = useCallback(async () => {
+        if (!accessToken) {
+            setLoading(false);
+            return;
+        }
 
-            try {
-                setLoading(true);
-                const docs = await docsApi.list(accessToken);
-                setDocuments(docs);
-                setError(null);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch documents');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDocuments();
+        try {
+            setLoading(true);
+            const docs = await docsApi.list(accessToken);
+            setDocuments(docs);
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to fetch documents');
+        } finally {
+            setLoading(false);
+        }
     }, [accessToken]);
 
-    return { documents, loading, error };
+    useEffect(() => {
+        fetchDocuments();
+    }, [fetchDocuments]);
+
+    return { documents, loading, error, refetch: fetchDocuments };
 };

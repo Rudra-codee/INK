@@ -187,4 +187,16 @@ export const storyRoomApi = {
     }),
 };
 
+export const aiApi = {
+  assist: (
+    payload: { prompt: string; context?: string; mode?: 'ideas' | 'rewrite' | 'continue' },
+    token: string
+  ) =>
+    request<{ suggestion: string }>('/api/ai/assist', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      token,
+    }),
+};
+
 

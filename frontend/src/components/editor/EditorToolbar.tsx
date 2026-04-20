@@ -1,12 +1,13 @@
 import { Editor } from '@tiptap/react';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
 import {
     Bold, Italic, Underline as UnderlineIcon, Strikethrough,
     AlignLeft, AlignCenter, AlignRight, AlignJustify,
     List, ListOrdered, Quote, Code, Terminal,
     ArrowLeft, Save, Undo, Redo, Link as LinkIcon,
-    Type, LayoutList, MessageSquare, ChevronDown, Minus, Plus
+    LayoutList, MessageSquare, Minus, Plus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,9 +52,15 @@ export const EditorToolbar = ({
     const navigate = useNavigate();
     const [fontSize, setFontSize] = useState('16');
 
-    if (!editor) return null;
+    type ToolbarButtonProps = {
+        onClick: () => void;
+        isActive?: boolean;
+        icon: ComponentType<{ className?: string }>;
+        label: string;
+        disabled?: boolean;
+    };
 
-    const ToolbarButton = ({ onClick, isActive, icon: Icon, label, disabled = false }: any) => (
+    const ToolbarButton = ({ onClick, isActive = false, icon: Icon, label, disabled = false }: ToolbarButtonProps) => (
         <Button
             type="button"
             variant="ghost"
@@ -108,8 +115,47 @@ export const EditorToolbar = ({
         }
     };
 
+    const parseFontSize = (value: string | null | undefined): number => {
+        if (!value) return 16;
+        const parsed = parseInt(value.replace('px', ''), 10);
+        if (Number.isNaN(parsed)) return 16;
+        return Math.min(72, Math.max(8, parsed));
+    };
+
+    const applyFontSize = (nextSize: number) => {
+        if (!editor) return;
+        const normalized = Math.min(72, Math.max(8, nextSize));
+        setFontSize(normalized.toString());
+        editor.chain().focus().setFontSize(`${normalized}px`).run();
+    };
+
+    const commitTypedFontSize = () => {
+        const parsed = parseFontSize(fontSize);
+        applyFontSize(parsed);
+    };
+
+    useEffect(() => {
+        if (!editor) return;
+
+        const syncFontSize = () => {
+            const currentSize = editor.getAttributes('textStyle').fontSize;
+            setFontSize(parseFontSize(currentSize).toString());
+        };
+
+        syncFontSize();
+        editor.on('selectionUpdate', syncFontSize);
+        editor.on('update', syncFontSize);
+
+        return () => {
+            editor.off('selectionUpdate', syncFontSize);
+            editor.off('update', syncFontSize);
+        };
+    }, [editor]);
+
+    if (!editor) return null;
+
     return (
-        <div className="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
+        <div className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
             {/* Top Row: Navigation & Title */}
             <div className="flex items-center justify-between px-4 h-12 border-b border-border/50">
                 <div className="flex items-center gap-3 flex-1">
@@ -162,6 +208,25 @@ export const EditorToolbar = ({
 
             {/* Bottom Row: Compact Formatting Toolbar */}
             <div className="flex items-center gap-1 px-4 py-2 overflow-x-auto scrollbar-hide">
+                <div className="flex items-center gap-0.5">
+                    <ToolbarButton
+                        onClick={() => editor.chain().focus().undo().run()}
+                        isActive={false}
+                        icon={Undo}
+                        label="Undo"
+                        disabled={!editor.can().chain().focus().undo().run()}
+                    />
+                    <ToolbarButton
+                        onClick={() => editor.chain().focus().redo().run()}
+                        isActive={false}
+                        icon={Redo}
+                        label="Redo"
+                        disabled={!editor.can().chain().focus().redo().run()}
+                    />
+                </div>
+
+                <div className="h-6 w-[1px] bg-border mx-1" />
+
                 {/* Heading Selector */}
                 <Select value={getCurrentHeadingLevel()} onValueChange={setHeadingLevel}>
                     <SelectTrigger className="h-9 w-[110px] text-sm border-none shadow-none hover:bg-muted">
@@ -185,8 +250,8 @@ export const EditorToolbar = ({
                         size="sm"
                         className="h-7 w-7 p-0 hover:bg-background"
                         onClick={() => {
-                            const newSize = Math.max(8, parseInt(fontSize) - 2);
-                            setFontSize(newSize.toString());
+                            const newSize = parseFontSize(fontSize) - 2;
+                            applyFontSize(newSize);
                         }}
                     >
                         <Minus className="h-3 w-3" />
@@ -194,6 +259,12 @@ export const EditorToolbar = ({
                     <Input
                         value={fontSize}
                         onChange={(e) => setFontSize(e.target.value)}
+                        onBlur={commitTypedFontSize}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                                commitTypedFontSize();
+                            }
+                        }}
                         className="h-7 w-12 text-center text-sm border-none shadow-none bg-transparent focus-visible:ring-0 px-1"
                     />
                     <Button
@@ -201,8 +272,8 @@ export const EditorToolbar = ({
                         size="sm"
                         className="h-7 w-7 p-0 hover:bg-background"
                         onClick={() => {
-                            const newSize = Math.min(72, parseInt(fontSize) + 2);
-                            setFontSize(newSize.toString());
+                            const newSize = parseFontSize(fontSize) + 2;
+                            applyFontSize(newSize);
                         }}
                     >
                         <Plus className="h-3 w-3" />

@@ -10,12 +10,23 @@ import { Button } from '@/components/ui/button';
 import { DocumentSkeleton } from '@/components/dashboard/DocumentSkeleton';
 import { Trash2, RotateCcw, AlertCircle } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { AiChatWidget } from '@/components/ai/AiChatWidget';
 
 const TrashPage = () => {
     const { user, status } = useAuth();
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
     const { trashedDocs, loading, refetch } = useTrash();
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const filteredDocs = trashedDocs.filter((doc) => {
+        if (!normalizedQuery) return true;
+        return (
+            (doc.title || '').toLowerCase().includes(normalizedQuery) ||
+            doc.content.replace(/<[^>]*>/g, '').toLowerCase().includes(normalizedQuery)
+        );
+    });
+
     const { restoreDocument, permanentDelete } = useDocumentActions();
 
     useEffect(() => {
@@ -50,7 +61,11 @@ const TrashPage = () => {
 
     return (
         <div className="min-h-screen bg-background">
-            <DashboardTopNav onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+            <DashboardTopNav
+                onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+            />
             <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             <main className="md:pl-64 pt-16">
@@ -60,7 +75,7 @@ const TrashPage = () => {
                             Trash
                         </h1>
                         <p className="text-muted-foreground">
-                            {trashedDocs.length} {trashedDocs.length === 1 ? 'document' : 'documents'} in trash
+                            {filteredDocs.length} {filteredDocs.length === 1 ? 'document' : 'documents'} in trash
                         </p>
                     </div>
 
@@ -70,9 +85,9 @@ const TrashPage = () => {
                                 <DocumentSkeleton key={i} />
                             ))}
                         </div>
-                    ) : trashedDocs.length > 0 ? (
+                    ) : filteredDocs.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            {trashedDocs.map((doc) => (
+                            {filteredDocs.map((doc) => (
                                 <Card
                                     key={doc.id}
                                     className="p-5 opacity-75 hover:opacity-100 transition-opacity"
@@ -89,12 +104,12 @@ const TrashPage = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex gap-2">
+                                    <div className="grid grid-cols-1 gap-2">
                                         <Button
                                             variant="outline"
                                             size="sm"
                                             onClick={() => handleRestore(doc.id)}
-                                            className="flex-1 gap-2"
+                                            className="w-full justify-center gap-2"
                                         >
                                             <RotateCcw className="h-4 w-4" />
                                             Restore
@@ -103,10 +118,11 @@ const TrashPage = () => {
                                             variant="destructive"
                                             size="sm"
                                             onClick={() => handlePermanentDelete(doc.id)}
-                                            className="flex-1 gap-2"
+                                            className="w-full justify-center gap-2 whitespace-normal text-center leading-tight py-2 h-auto min-h-9"
+                                            title="Delete permanently"
                                         >
                                             <AlertCircle className="h-4 w-4" />
-                                            Delete
+                                            Delete Permanently
                                         </Button>
                                     </div>
                                 </Card>
@@ -127,6 +143,7 @@ const TrashPage = () => {
                     )}
                 </div>
             </main>
+            <AiChatWidget />
         </div>
     );
 };

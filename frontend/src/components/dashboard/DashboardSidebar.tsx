@@ -1,4 +1,4 @@
-import { Home, FileText, Users, Star, Trash2, Plus, Sparkles } from 'lucide-react';
+import { Home, FileText, Users, Star, Trash2, Plus, Sparkles, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -40,6 +40,7 @@ export const DashboardSidebar = ({ isOpen = true, onClose }: DashboardSidebarPro
         },
         { label: 'Favorites', icon: <Star className="h-4 w-4" />, path: '/dashboard/favorites' },
         { label: 'Trash', icon: <Trash2 className="h-4 w-4" />, path: '/dashboard/trash' },
+        { label: 'Settings', icon: <Settings className="h-4 w-4" />, path: '/settings' },
     ];
 
     const handleNavClick = (path: string) => {

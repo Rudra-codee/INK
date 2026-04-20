@@ -57,6 +57,47 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get favorite documents
+router.get('/favorites', async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const documents = await prisma.document.findMany({
+            where: {
+                ownerId: userId,
+                favorite: true,
+                trashed: false,
+            },
+            orderBy: { updatedAt: 'desc' },
+        });
+
+        return res.json(documents);
+    } catch (error) {
+        console.error('Get favorites error:', error);
+        return res.status(500).json({ error: 'Unable to fetch favorites.' });
+    }
+});
+
+// Get trashed documents
+router.get('/trash', async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const documents = await prisma.document.findMany({
+            where: {
+                ownerId: userId,
+                trashed: true,
+            },
+            orderBy: { updatedAt: 'desc' },
+        });
+
+        return res.json(documents);
+    } catch (error) {
+        console.error('Get trash error:', error);
+        return res.status(500).json({ error: 'Unable to fetch trash.' });
+    }
+});
+
 // Get a specific document
 router.get('/:id', async (req, res) => {
     try {
@@ -147,47 +188,6 @@ router.delete('/:id', async (req, res) => {
     } catch (error) {
         console.error('Delete document error:', error);
         return res.status(500).json({ error: 'Unable to delete document.' });
-    }
-});
-
-// Get favorite documents
-router.get('/favorites', async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        const documents = await prisma.document.findMany({
-            where: {
-                ownerId: userId,
-                favorite: true,
-                trashed: false,
-            },
-            orderBy: { updatedAt: 'desc' },
-        });
-
-        return res.json(documents);
-    } catch (error) {
-        console.error('Get favorites error:', error);
-        return res.status(500).json({ error: 'Unable to fetch favorites.' });
-    }
-});
-
-// Get trashed documents
-router.get('/trash', async (req, res) => {
-    try {
-        const userId = req.user.id;
-
-        const documents = await prisma.document.findMany({
-            where: {
-                ownerId: userId,
-                trashed: true,
-            },
-            orderBy: { updatedAt: 'desc' },
-        });
-
-        return res.json(documents);
-    } catch (error) {
-        console.error('Get trash error:', error);
-        return res.status(500).json({ error: 'Unable to fetch trash.' });
     }
 });
 

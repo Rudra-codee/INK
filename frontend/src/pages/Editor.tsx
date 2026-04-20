@@ -8,6 +8,7 @@ import { TipTapEditor } from '@/components/editor/TipTapEditor';
 import { DocumentOutline } from '@/components/editor/DocumentOutline';
 import { cn } from '@/lib/utils';
 import { Editor } from '@tiptap/react';
+import { AiChatWidget } from '@/components/ai/AiChatWidget';
 
 const EditorPage = () => {
     const { docId } = useParams<{ docId: string }>();
@@ -115,7 +116,7 @@ const EditorPage = () => {
                 {/* Editor Canvas */}
                 <div className="flex-1 flex justify-center px-4 py-8 overflow-y-auto scroll-smooth">
                     <div className={cn(
-                        "w-full max-w-[800px] bg-white rounded-xl shadow-sm border border-black/5 min-h-[calc(100vh-140px)] p-12 md:p-16 transition-all duration-300",
+                        "w-full max-w-[800px] bg-card text-card-foreground rounded-xl shadow-sm border border-border min-h-[calc(100vh-140px)] p-12 md:p-16 transition-all duration-300",
                         "prose-headings:font-serif prose-headings:font-medium prose-p:font-sans prose-p:text-lg prose-p:leading-relaxed"
                     )}>
                         <TipTapEditor
@@ -126,6 +127,14 @@ const EditorPage = () => {
                     </div>
                 </div>
             </div>
+            <AiChatWidget
+                title="Ink AI for this document"
+                context={content.replace(/<[^>]*>/g, ' ').slice(0, 5000)}
+                onInsertSuggestion={(text) => {
+                    if (!editor) return;
+                    editor.chain().focus().insertContent(text).run();
+                }}
+            />
         </div>
     );
 };

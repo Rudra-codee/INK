@@ -1,4 +1,4 @@
-import { useEditor, EditorContent } from '@tiptap/react';
+import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
@@ -12,12 +12,13 @@ import Code from '@tiptap/extension-code';
 import CodeBlock from '@tiptap/extension-code-block';
 import Blockquote from '@tiptap/extension-blockquote';
 import { Callout } from '@/extensions/callout';
+import { FontSize } from '@/extensions/fontSize';
 
 interface TipTapEditorProps {
     content: string;
     onChange: (content: string) => void;
     editable?: boolean;
-    onEditorReady?: (editor: any) => void;
+    onEditorReady?: (editor: Editor) => void;
 }
 
 export const TipTapEditor = ({ content, onChange, editable = true, onEditorReady }: TipTapEditorProps) => {
@@ -53,6 +54,7 @@ export const TipTapEditor = ({ content, onChange, editable = true, onEditorReady
                 types: ['heading', 'paragraph'],
             }),
             TextStyle,
+            FontSize,
             Color,
             Highlight.configure({
                 multicolor: true,
@@ -69,7 +71,7 @@ export const TipTapEditor = ({ content, onChange, editable = true, onEditorReady
         },
         editorProps: {
             attributes: {
-                class: 'prose prose-lg max-w-none focus:outline-none min-h-[600px] leading-relaxed',
+                class: 'prose prose-lg max-w-none focus:outline-none min-h-[600px] leading-relaxed text-foreground',
             },
         },
         onCreate: ({ editor }) => {

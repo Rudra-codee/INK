@@ -5,13 +5,14 @@ import { useDocuments } from '@/hooks/useDocuments';
 import { DashboardTopNav } from '@/components/dashboard/DashboardTopNav';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { DocumentGrid } from '@/components/dashboard/DocumentGrid';
-import { NewDocumentButton } from '@/components/dashboard/NewDocumentButton';
+import { AiChatWidget } from '@/components/ai/AiChatWidget';
 
 const HomePage = () => {
     const { user, status } = useAuth();
     const navigate = useNavigate();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const { documents, loading } = useDocuments();
+    const [searchQuery, setSearchQuery] = useState('');
+    const { documents, loading, refetch } = useDocuments();
 
     // Authentication gate
     useEffect(() => {
@@ -35,17 +36,31 @@ const HomePage = () => {
         );
     }
 
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
     // Convert documents to format expected by DocumentGrid (limit to 8 recent)
     const formattedDocuments = documents.slice(0, 8).map(doc => ({
         id: doc.id,
         title: doc.title,
         updatedAt: new Date(doc.updatedAt),
         preview: doc.content.replace(/<[^>]*>/g, '').substring(0, 100),
+        isFavorite: Boolean(doc.favorite),
     }));
+    const filteredDocuments = formattedDocuments.filter((doc) => {
+        if (!normalizedQuery) return true;
+        return (
+            doc.title.toLowerCase().includes(normalizedQuery) ||
+            (doc.preview || '').toLowerCase().includes(normalizedQuery)
+        );
+    });
 
     return (
         <div className="min-h-screen bg-background">
-            <DashboardTopNav onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+            <DashboardTopNav
+                onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+            />
             <DashboardSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             <main className="md:pl-64 pt-16">
@@ -59,11 +74,11 @@ const HomePage = () => {
                         </p>
                     </div>
 
-                    <DocumentGrid documents={formattedDocuments} loading={loading} />
+                    <DocumentGrid documents={filteredDocuments} loading={loading} onDocumentActionComplete={refetch} />
                 </div>
             </main>
 
-            <NewDocumentButton />
+            <AiChatWidget />
         </div>
     );
 };

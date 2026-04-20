@@ -6,9 +6,11 @@ import { useState } from 'react';
 
 interface DashboardTopNavProps {
     onMenuClick?: () => void;
+    searchQuery?: string;
+    onSearchChange?: (query: string) => void;
 }
 
-export const DashboardTopNav = ({ onMenuClick }: DashboardTopNavProps) => {
+export const DashboardTopNav = ({ onMenuClick, searchQuery = '', onSearchChange }: DashboardTopNavProps) => {
     const [searchFocused, setSearchFocused] = useState(false);
 
     return (
@@ -42,6 +44,8 @@ export const DashboardTopNav = ({ onMenuClick }: DashboardTopNavProps) => {
                         <Input
                             type="search"
                             placeholder="Search documents..."
+                            value={searchQuery}
+                            onChange={(event) => onSearchChange?.(event.target.value)}
                             className={`pl-10 transition-all duration-200 ${searchFocused ? 'ring-2 ring-primary/20 scale-[1.02]' : ''
                                 }`}
                             onFocus={() => setSearchFocused(true)}

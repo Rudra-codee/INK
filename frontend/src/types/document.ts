@@ -3,6 +3,8 @@ export interface Document {
     ownerId: string;
     title: string;
     content: string;
+    favorite?: boolean;
+    trashed?: boolean;
     createdAt: string;
     updatedAt: string;
 }

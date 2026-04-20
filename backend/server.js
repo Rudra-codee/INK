@@ -8,12 +8,15 @@ const authRoutes = require('./routes/auth');
 const docsRoutes = require('./routes/docs');
 const storyRoomRoutes = require('./routes/storyRooms');
 const publicStoryRoutes = require('./routes/publicStory');
+const aiRoutes = require('./routes/ai');
 const requireAuth = require('./middleware/auth');
 const { connectDB, prisma, disconnectDB } = require('./config/db');
 const { initTurnTimer } = require('./cron/turnTimer');
 
 const app = express();
 initTurnTimer();
+
+console.log(`AI config loaded: GROQ_API_KEY ${process.env.GROQ_API_KEY ? 'present' : 'missing'}`);
 
 const defaultOrigins = [
   'http://localhost:8082',
@@ -61,6 +64,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/docs', docsRoutes);
 app.use('/api/story-rooms', storyRoomRoutes);
 app.use('/api/public', publicStoryRoutes);
+app.use('/api/ai', aiRoutes);
 
 const mapUserResponse = (user) => ({
   id: user.id,
